@@ -10,11 +10,11 @@
 
 ./ziRoom.py cores thread lon lat outfile
 
-cores:解析HTML使用的CPU核心数
-thread:用于爬取HTML的线程数
-lon:指定地点的经度
-lat:指定地点的纬度
-outfile:爬取结果存放的位置
+- cores:解析HTML使用的CPU核心数
+- thread:用于爬取HTML的线程数
+- lon:指定地点的经度
+- lat:指定地点的纬度
+- outfile:爬取结果存放的位置
 
 example: 
 
