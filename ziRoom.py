@@ -9,16 +9,31 @@ import Queue
 import os
 import pp
 
-if len(sys.argv)!=6:
-    print "usage:ziroom.py cores thread lon lat outfile"
+if len(sys.argv)!=7:
+    print "usage:ziroom.py city cores thread lon lat outfile"
     os._exit(0)
 
-originLocation = (float(sys.argv[3]),float(sys.argv[4]))
+city=sys.argv[1]
+cores=int(sys.argv[2])
+thread=int(sys.argv[3])
+lon=float(sys.argv[4])
+lat=float(sys.argv[5])
+outfile=sys.argv[6]
+
+baseUrl=""
+if city=="shenzhen" or city=="sz":
+    baseUrl="http://sz.ziroom.com"
+elif city=="shanghai" or city=="sh":
+    baseUrl="http://sh.ziroom.com"
+else:
+    baseUrl="http://www.ziroom.com"
+
+originLocation = (lat,lon)
 
 taskQueue = Queue.Queue()
 resultQueue=Queue.Queue()
-fout=open(sys.argv[5],"w")
-job_server = pp.Server(int(sys.argv[1]))
+fout=open(outfile,"w")
+job_server = pp.Server(cores)
 print job_server.get_ncpus(), "workers"
 
 opener = urllib2.build_opener()
@@ -95,7 +110,7 @@ def paraseToGetDetail(html,originLocation):
     struct=detail_rooms[2].contents[1].strip()[4:]
     floor=detail_rooms[3].contents[1].strip()[4:-1]
     floor=floor.replace("/",",")
-    dis=str(haversine(originLocation, (float(lon),float(lat))))
+    dis=str(haversine(originLocation, (float(lat),float(lon))))
     data["room_name"]=room_name
     data["price"]=price
     data["lon"]=lon
@@ -113,7 +128,7 @@ def paraseToGetDetail(html,originLocation):
 def getRoomDetail(rurl):
     data=None
     try:
-        url="http://www.ziroom.com/"+rurl
+        url=baseUrl+"/"+rurl
         html=httpHelper(url)
         data=job_server.submit(paraseToGetDetail, (html,originLocation), (), ("bs4","haversine","sys"))
     except:
@@ -123,16 +138,16 @@ def getRoomDetail(rurl):
 def myTask():
     while True:
         try:
-            url="http://www.ziroom.com/z/nl/?p="+str(taskQueue.get(block=True))
+            url=baseUrl+"/z/nl/?p="+str(taskQueue.get(block=True))
             html=httpHelper(url)
             urls=job_server.submit(paraseToGetDetailUrl, (html,), (), ("bs4",))
             for i in urls():
                 data=getRoomDetail(i)()
-                line=",".join(["http://www.ziroom.com"+i,data["room_name"],data["price"],data["priceType"],data["isShare"],data["lon"],data["lat"],data["space"],data["dirction"],data["struct"],data["floor"],data["dis"],data["status"]])
+                line=",".join([baseUrl+i,data["room_name"],data["price"],data["priceType"],data["isShare"],data["lon"],data["lat"],data["space"],data["dirction"],data["struct"],data["floor"],data["dis"],data["status"]])
                 resultQueue.put(line)
         except:
             print "error "+url
 
-for i in range(0,int(sys.argv[2])):
+for i in range(0,thread):
     threading.Thread(target= myTask,args= ()).start()
 print "thread init done!"
