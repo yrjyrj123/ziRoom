@@ -24,7 +24,7 @@ class Grid():
             return self._page_one_cache
 
         url = API_URL % (lonlat[0], lonlat[1], lonlat[2], lonlat[3], page_index)
-        print(url)
+        # print(url)
         while True:
             try:
                 json_str = requests.get(url, headers={
@@ -131,9 +131,11 @@ if __name__ == '__main__':
 
     gm = GridManager(grid_range)
     result = gm.run()
-    rooms = filter(lambda x: x["room_status"] == "dzz", result.values())
+    rooms = filter(lambda x: x["room_status"] != "ycz" and x["room_status"] != "yxd", result.values())
     share_rooms = filter(lambda x: x["is_whole"] == 0, rooms)
     whole_rooms = filter(lambda x: x["is_whole"] == 1, rooms)
+
+    print("整租房源: %d     合租房源:%d" % (len(whole_rooms), len(share_rooms)))
 
     f = zipfile.ZipFile('web/share_rooms.zip', 'w', zipfile.ZIP_DEFLATED)
     f.writestr('share_rooms.json', json.dumps(share_rooms))

@@ -61,12 +61,23 @@
         pointCollection.addEventListener('click', function (e) {
             var item = e.point.room;
 
+            room_status=item["room_status"];
+            if (room_status=="dzz"){
+                room_status="待出租";
+            }else if(room_status=="tzpzz" || room_status=="zxpzz"){
+                room_status="配置中";
+            }else if(room_status=="yxd"){
+                room_status="已下订";
+            }else if(room_status=="ycz"){
+                room_status="已出租";
+            }
+
             var content = "<a href=\"http:" + item["url"] + "\" target='_blank'>" + item["name"] + "</a>";
 
             var infoWindow = new BMap.InfoWindow(content, {
                 width: 250,
                 height: 80,
-                title: room_type
+                title: room_type+" : "+room_status
             });
             var point = new BMap.Point(e.point.lng, e.point.lat);
 
