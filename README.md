@@ -2,14 +2,14 @@
 
 搜集链家自如品牌房源，并使用百度地图可视化。
 
-<!--![房源可视化效果](https://github.com/yrjyrj123/image/raw/master/ziroom_map.png)-->
+![房源可视化效果](https://github.com/yrjyrj123/image/raw/master/ziroom_map.png)
 
 ## 查看房源信息
 本人坐标北京，正在寻找房子，同在北京的小伙伴可以直接查看我搜集好的房源。
 
 近期会每日更新: 
 
-[传送门](http://yrjyrj123.github.io/ziRoom/web/index.html)
+[传送门](http://yrjyrj123.github.io/ziRoom/web)
 
 ## 自行搜集房源
 
