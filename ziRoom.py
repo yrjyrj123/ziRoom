@@ -1,6 +1,6 @@
 # coding=utf-8
 import requests
-import queue
+import Queue
 import json
 import zipfile
 
@@ -89,7 +89,7 @@ class Grid():
 
 class GridManager():
     def __init__(self, lonlat, min_area=1e6, split_count=2):
-        self._q = queue.Queue()
+        self._q = Queue.Queue()
         root_grid = Grid(lonlat)
         self._q.put(root_grid)
         self._total_area = root_grid.area()
